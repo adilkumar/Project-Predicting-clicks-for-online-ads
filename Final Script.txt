@@ -1,0 +1,404 @@
+library(data.table)
+setwd("C:/Users/Adil Ashish Kumar/Desktop/674 - ML/Project/Project Data")
+
+test_data = fread("ProjectTestData.csv", header = TRUE)
+train_data = fread("ProjectTrainingData.csv", header = TRUE)
+
+test_data1 = test_data
+train_data1 = train_data
+
+
+train_data1$hourofday = substr(train_data1$hour,7,8)
+train_data1$dayofweek = weekdays(as.Date(substr(train_data1$hour,1,6),format ="%y%m%d"))
+
+test_data1$hourofday = substr(test_data1$hour,7,8)
+test_data1$dayofweek = weekdays(as.Date(substr(test_data1$hour,1,6),format ="%y%m%d"))
+
+
+train_data1$device_id = NULL
+test_data1$device_id = NULL
+
+train_data1$id = NULL
+train_data1$hour = NULL
+train_data1$C1 = as.factor(train_data1$C1)
+train_data1$banner_pos = as.factor(train_data1$banner_pos)
+train_data1$device_type = as.factor(train_data1$device_type)
+train_data1$device_conn_type = as.factor(train_data1$device_conn_type)
+train_data1$C14 = as.factor(train_data1$C14)
+train_data1$C15 = as.factor(train_data1$C15)
+train_data1$C16 = as.factor(train_data1$C16)
+train_data1$C17 = as.factor(train_data1$C17)
+train_data1$C18 = as.factor(train_data1$C18) 
+train_data1$C19 = as.factor(train_data1$C19)
+train_data1$C20 = as.factor(train_data1$C20)
+train_data1$C21 = as.factor(train_data1$C21)
+train_data1$click = as.factor(train_data1$click)
+train_data1$site_id = as.factor(train_data1$site_id)
+train_data1$site_domain = as.factor(train_data1$site_domain)
+train_data1$site_category = as.factor(train_data1$site_category)
+train_data1$app_id = as.factor(train_data1$app_id)
+train_data1$app_domain = as.factor(train_data1$app_domain)
+train_data1$app_category = as.factor(train_data1$app_category)
+#train_data1$device_id = as.factor(train_data1$device_id)
+train_data1$device_ip = as.factor(train_data1$device_ip)
+train_data1$device_model = as.factor(train_data1$device_model)
+train_data1$device_type = as.factor(train_data1$device_type)
+train_data1$device_conn_type = as.factor(train_data1$device_conn_type)
+train_data1$hourofday = as.factor(train_data1$hourofday)
+train_data1$dayofweek = as.factor(train_data1$dayofweek) 
+
+
+
+test_data1$id = NULL
+test_data1$hour = NULL
+test_data1$C1 = as.factor(test_data1$C1)
+test_data1$banner_pos = as.factor(test_data1$banner_pos)
+test_data1$device_type = as.factor(test_data1$device_type)
+test_data1$device_conn_type = as.factor(test_data1$device_conn_type)
+test_data1$C14 = as.factor(test_data1$C14)
+test_data1$C15 = as.factor(test_data1$C15)
+test_data1$C16 = as.factor(test_data1$C16)
+test_data1$C17 = as.factor(test_data1$C17)
+test_data1$C18 = as.factor(test_data1$C18) 
+test_data1$C19 = as.factor(test_data1$C19)
+test_data1$C20 = as.factor(test_data1$C20)
+test_data1$C21 = as.factor(test_data1$C21)
+#test_data1$click = as.factor(test_data1$click)
+test_data1$site_id = as.factor(test_data1$site_id)
+test_data1$site_domain = as.factor(test_data1$site_domain)
+test_data1$site_category = as.factor(test_data1$site_category)
+test_data1$app_id = as.factor(test_data1$app_id)
+test_data1$app_domain = as.factor(test_data1$app_domain)
+test_data1$app_category = as.factor(test_data1$app_category)
+#test_data1$device_id = as.factor(test_data1$device_id)
+test_data1$device_ip = as.factor(test_data1$device_ip)
+test_data1$device_model = as.factor(test_data1$device_model)
+test_data1$device_type = as.factor(test_data1$device_type)
+test_data1$device_conn_type = as.factor(test_data1$device_conn_type)
+test_data1$hourofday = as.factor(test_data1$hourofday)
+test_data1$dayofweek = as.factor(test_data1$dayofweek) 
+
+
+
+
+lf <- names(which(prop.table(table(train_data1$site_id)) < 0.002))
+levels(train_data1$site_id)[levels(train_data1$site_id) %in% lf] <- "Other"
+levels(test_data1$site_id)[levels(test_data1$site_id) %in% lf] <- "Other"
+
+lf <- names(which(prop.table(table(train_data1$app_category)) < 0.001))
+levels(train_data1$app_category)[levels(train_data1$app_category) %in% lf] <- "Other"
+levels(test_data1$app_category)[levels(test_data1$app_category) %in% lf] <- "Other"
+
+lf <- names(which(prop.table(table(train_data1$app_domain)) < 0.001))
+levels(train_data1$app_domain)[levels(train_data1$app_domain) %in% lf] <- "Other"
+levels(test_data1$app_domain)[levels(test_data1$app_domain) %in% lf] <- "Other"
+
+lf <- names(which(prop.table(table(train_data1$app_id)) < 0.001))
+levels(train_data1$app_id)[levels(train_data1$app_id) %in% lf] <- "Other"
+levels(test_data1$app_id)[levels(test_data1$app_id) %in% lf] <- "Other"
+
+lf <- names(which(prop.table(table(train_data1$banner_pos)) < 0.001))
+levels(train_data1$banner_pos)[levels(train_data1$banner_pos) %in% lf] <- "Other"
+levels(test_data1$banner_pos)[levels(test_data1$banner_pos) %in% lf] <- "Other"
+
+
+lf <- names(which(prop.table(table(train_data1$C1)) < 0.001))
+levels(train_data1$C1)[levels(train_data1$C1) %in% lf] <- "Other"
+levels(test_data1$C1)[levels(test_data1$C1) %in% lf] <- "Other"
+
+
+lf <- names(which(prop.table(table(train_data1$C14)) < 0.01))
+levels(train_data1$C14)[levels(train_data1$C14) %in% lf] <- "Other" ##
+levels(test_data1$C14)[levels(test_data1$C14) %in% lf] <- "Other" ##
+
+lf <- names(which(prop.table(table(train_data1$C15)) < 0.001))
+levels(train_data1$C15)[levels(train_data1$C15) %in% lf] <- "Other"
+levels(test_data1$C15)[levels(test_data1$C15) %in% lf] <- "Other"
+
+
+lf <- names(which(prop.table(table(train_data1$C16)) < 0.001))
+levels(train_data1$C16)[levels(train_data1$C16) %in% lf] <- "Other"
+levels(test_data1$C16)[levels(test_data1$C16) %in% lf] <- "Other"
+
+lf <- names(which(prop.table(table(train_data1$C17)) < 0.005))
+levels(train_data1$C17)[levels(train_data1$C17) %in% lf] <- "Other" ##
+levels(test_data1$C17)[levels(test_data1$C17) %in% lf] <- "Other" ##
+
+lf <- names(which(prop.table(table(train_data1$C19)) < 0.005))
+levels(train_data1$C19)[levels(train_data1$C19) %in% lf] <- "Other"
+levels(test_data1$C19)[levels(test_data1$C19) %in% lf] <- "Other"
+
+
+lf <- names(which(prop.table(table(train_data1$C20)) < 0.003))
+levels(train_data1$C20)[levels(train_data1$C20) %in% lf] <- "Other"
+levels(test_data1$C20)[levels(test_data1$C20) %in% lf] <- "Other"
+
+
+lf <- names(which(prop.table(table(train_data1$C21)) < 0.002))
+levels(train_data1$C21)[levels(train_data1$C21) %in% lf] <- "Other" ##
+levels(test_data1$C21)[levels(test_data1$C21) %in% lf] <- "Other" ##
+
+lf <- names(which(prop.table(table(train_data1$device_model)) < 0.005))
+levels(train_data1$device_model)[levels(train_data1$device_model) %in% lf] <- "Other"
+levels(test_data1$device_model)[levels(test_data1$device_model) %in% lf] <- "Other"
+
+#lf <- names(which(prop.table(table(train_data1$device_id)) < 0.001))
+#levels(train_data1$device_id)[levels(train_data1$device_id) %in% lf] <- "Other"
+#levels(test_data1$device_id)[levels(test_data1$device_id) %in% lf] <- "Other"
+
+lf <- names(which(prop.table(table(train_data1$device_ip)) < 0.0005))
+levels(train_data1$device_ip)[levels(train_data1$device_ip) %in% lf] <- "Other"
+levels(test_data1$device_ip)[levels(test_data1$device_ip) %in% lf] <- "Other"
+
+lf <- names(which(prop.table(table(train_data1$site_category)) < 0.001))
+levels(train_data1$site_category)[levels(train_data1$site_category) %in% lf] <- "Other"
+levels(test_data1$site_category)[levels(test_data1$site_category) %in% lf] <- "Other"
+
+lf <- names(which(prop.table(table(train_data1$site_domain)) < 0.002))
+levels(train_data1$site_domain)[levels(train_data1$site_domain) %in% lf] <- "Other"
+levels(test_data1$site_domain)[levels(test_data1$site_domain) %in% lf] <- "Other"
+
+
+library(caret)
+train.rows<- createDataPartition(y= train_data1$click, p=0.6, list = FALSE)
+train.data<- train_data1[train.rows,] 
+rest.data = train_data1[-train.rows,] 
+val.rows<- createDataPartition(y= rest.data$click, p=0.5, list = FALSE)
+val.data = rest.data[val.rows,]
+test.data = rest.data[-val.rows,]
+
+sam.train = train.data[sample(nrow(train.data), 1000000), ]
+sam.val =  val.data[sample(nrow(val.data), 1000000), ]
+
+yvar = "click"
+xvars = setdiff(names(train_data1),yvar)
+
+sam.train = as.data.frame(sam.train)
+
+library(FeatureHashing)
+Train_hashed = hashed.model.matrix(~., data=sam.train[xvars], hash.size=2^12, transpose=FALSE)
+Train_hashed = as(Train_hashed, "dgCMatrix")
+
+
+sam.val = as.data.frame(sam.val)
+
+Val_hashed = hashed.model.matrix(~., data=sam.val[xvars], hash.size=2^12, transpose=FALSE)
+Val_hashed = as(Val_hashed, "dgCMatrix")
+
+library(glmnet)
+m1ridge = glmnet(Train_hashed, sam.train[,yvar], 
+              family = "binomial",alpha=0)
+
+yridge = predict(m1ridge,Val_hashed,type = "response" )
+
+
+library("MLmetrics")
+LogLoss(yridge,as.numeric(levels(sam.val$click))[sam.val$click])
+
+
+
+temp = NULL
+temp2 = NULL
+for(i in 1:100)
+{
+  xx = yridge[,i]
+  xx = as.data.frame(xx)
+  temp$loss = LogLoss(xx$xx,as.numeric(levels(sam.val$click))[sam.val$click])
+  temp$lamda = i
+  temp2 = rbind(temp2,temp)
+}
+
+ridge = temp2
+
+
+m1lasso = glmnet(Train_hashed, sam.train[,yvar], 
+                 family = "binomial",alpha=1)
+
+
+ylasso = predict(m1lasso,Val_hashed,type = "response" )
+
+temp = NULL
+temp2 = NULL
+for(i in 1:69)
+{
+  xx = ylasso[,i]
+  xx = as.data.frame(xx)
+  temp$loss = LogLoss(xx$xx,as.numeric(levels(sam.val$click))[sam.val$click])
+  temp$lamda = i
+  temp2 = rbind(temp2,temp)
+}
+
+lasso = temp2
+
+library(xgboost)
+
+m2tree = xgboost(Train_hashed,as.numeric(levels(sam.train[,yvar]))[sam.train[,yvar]],objective = "binary:logistic",nrounds=100, max_depth = 10)
+
+ytree = predict(m2tree,Val_hashed,type = "response")
+LogLoss(ytree,as.numeric(levels(sam.val$click))[sam.val$click])
+
+
+m3RF = xgboost(Train_hashed,as.numeric(levels(sam.train[,yvar]))[sam.train[,yvar]],objective = "binary:logistic",num_parallel_tree = 1000, subsample = 0.5, colsample_bytree =0.5, max_depth = 10,nrounds=2)
+
+yRF = predict(m3RF,Val_hashed,type = "response")
+LogLoss(yRF,as.numeric(levels(sam.val$click))[sam.val$click])
+
+
+
+# models on full training set
+
+
+yvar = "click"
+xvars2 = setdiff(names(train.data),yvar)
+
+train2.data = as.data.frame(train.data)
+Train2_hashed = hashed.model.matrix(~., data=train2.data[xvars], hash.size=2^12, transpose=FALSE)
+Train2_hashed = as(Train2_hashed, "dgCMatrix")
+
+
+val2.data = as.data.frame(val.data)
+
+Val2_hashed = hashed.model.matrix(~., data=val2.data[xvars], hash.size=2^12, transpose=FALSE)
+Val2_hashed = as(Val2_hashed, "dgCMatrix")
+
+
+m2bigtree = xgboost(Train2_hashed,as.numeric(levels(train2.data[,yvar]))[train2.data[,yvar]],objective = "binary:logistic",nrounds=100, max_depth = 10)
+
+ybigtree = predict(m2bigtree,Val2_hashed,type = "response")
+LogLoss(ybigtree,as.numeric(levels(val2.data$click))[val2.data$click])
+# 0.3986455
+
+m1bigridge = glmnet(Train2_hashed, train2.data[,yvar], 
+                 family = "binomial",alpha=0)
+
+ybigridge = predict(m1bigridge,Val2_hashed,type = "response" )
+
+temp = NULL
+temp2 = NULL
+for(i in 1:100)
+{
+  xx = ybigridge[,i]
+  xx = as.data.frame(xx)
+  temp$loss = LogLoss(xx$xx,as.numeric(levels(val2.data$click))[val2.data$click])
+  temp$lamda = i
+  temp2 = rbind(temp2,temp)
+}
+
+bigridge = temp2
+
+
+m1biglasso = glmnet(Train2_hashed, train2.data[,yvar], 
+                 family = "binomial",alpha=1)
+
+
+ybiglasso = predict(m1biglasso,Val2_hashed,type = "response" )
+
+temp = NULL
+temp2 = NULL
+for(i in 1:69)
+{
+  xx = ybiglasso[,i]
+  xx = as.data.frame(xx)
+  temp$loss = LogLoss(xx$xx,as.numeric(levels(val2.data$click))[val2.data$click])
+  temp$lamda = i
+  temp2 = rbind(temp2,temp)
+}
+
+biglasso = temp2
+
+
+test2.data = as.data.frame(test.data)
+
+test2_hashed = hashed.model.matrix(~., data=test2.data[xvars], hash.size=2^12, transpose=FALSE)
+test2_hashed = as(test2_hashed, "dgCMatrix")
+
+
+
+ytestlasso = predict(m1biglasso,test2_hashed,type = "response" )
+
+ytestridge = predict(m1bigridge,test2_hashed,type = "response" )
+
+ytesttree = predict(m2bigtree,test2_hashed,type = "response")
+
+
+
+temp = NULL
+temp2 = NULL
+for(i in 1:100)
+{
+  xx = ytestridge[,i]
+  xx = as.data.frame(xx)
+  temp$loss = LogLoss(xx$xx,as.numeric(levels(test2.data$click))[test2.data$click])
+  temp$lamda = i
+  temp2 = rbind(temp2,temp)
+}
+
+testridge = temp2
+
+
+temp = NULL
+temp2 = NULL
+for(i in 1:69)
+{
+  xx = ytestlasso[,i]
+  xx = as.data.frame(xx)
+  temp$loss = LogLoss(xx$xx,as.numeric(levels(test2.data$click))[test2.data$click])
+  temp$lamda = i
+  temp2 = rbind(temp2,temp)
+}
+
+testlasso = temp2
+
+LogLoss(ytesttree,as.numeric(levels(test2.data$click))[test2.data$click])
+
+ytestlasso69 = ytestlasso[,69]
+ytestridge100 = ytestridge[,100]
+
+ytestridge100 = as.data.frame(ytestridge100)
+ytestlasso69 = as.data.frame(ytestlasso69)
+ytesttreefin = as.data.frame(ytesttree)
+
+ensem = cbind(ytestlasso69,ytestridge100,ytesttreefin)
+
+ensem$all3 = (ensem$ytestlasso69 + ensem$ytestridge100 + ensem$ytesttree)/3
+ensem$lasrid = (ensem$ytestlasso69 + ensem$ytestridge100)/2
+ensem$lastre = (ensem$ytestlasso69 + ensem$ytesttree)/2
+ensem$trerid = (ensem$ytestridge100 + ensem$ytesttree)/2
+
+LogLoss(ensem$all3,as.numeric(levels(test2.data$click))[test2.data$click])
+LogLoss(ensem$lasrid,as.numeric(levels(test2.data$click))[test2.data$click])
+
+LogLoss(ensem$lastre,as.numeric(levels(test2.data$click))[test2.data$click])
+
+LogLoss(ensem$trerid,as.numeric(levels(test2.data$click))[test2.data$click])
+
+
+
+fin.train = as.data.frame(train_data1)
+
+fin.train_hashed = hashed.model.matrix(~., data=fin.train[xvars], hash.size=2^12, transpose=FALSE)
+fin.train_hashed = as(fin.train_hashed, "dgCMatrix")
+
+
+fin.test = as.data.frame(test_data1)
+fin.test_hashed = hashed.model.matrix(~., data=fin.test[xvars], hash.size=2^12, transpose=FALSE)
+fin.test_hashed = as(fin.test_hashed, "dgCMatrix")
+
+
+
+
+fintree = xgboost(fin.train_hashed,as.numeric(levels(fin.train[,yvar]))[fin.train[,yvar]],objective = "binary:logistic",nrounds=100, max_depth = 10)
+
+yfintree = predict(fintree,fin.test_hashed ,type = "response")
+
+PRED = as.data.frame(yfintree)
+
+id = test_data$id
+
+id = as.data.frame(id)
+
+fin = cbind(id,PRED)
+fin[[2]] <- format(round(fin[[2]],10), scientific = FALSE)
+
+
+names(fin) = c("id","P(click)")
